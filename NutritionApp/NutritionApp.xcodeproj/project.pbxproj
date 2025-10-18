@@ -8,7 +8,6 @@
 
 /* Begin PBXFileReference section */
 		4579F9AD2EA3C3A500904384 /* NutritionApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NutritionApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		45BEAED32EA3DD33006CEE1A /* NutritionApp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = NutritionApp.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -42,13 +41,6 @@
 			isa = PBXGroup;
 			children = (
 				4579F9AD2EA3C3A500904384 /* NutritionApp.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		45BEAED42EA3DD33006CEE1A /* Products */ = {
-			isa = PBXGroup;
-			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -105,12 +97,6 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4579F9AE2EA3C3A500904384 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 45BEAED42EA3DD33006CEE1A /* Products */;
-					ProjectRef = 45BEAED32EA3DD33006CEE1A /* NutritionApp.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				4579F9AC2EA3C3A500904384 /* NutritionApp */,
