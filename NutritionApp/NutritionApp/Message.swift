@@ -8,7 +8,7 @@
 import Foundation
 
 struct ChatMessage: Identifiable, Codable {
-    let id = UUID()
+    var id = UUID()
     let role: String     // "user" or "assistant"
     let content: String
     

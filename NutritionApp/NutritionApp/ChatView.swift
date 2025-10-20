@@ -19,7 +19,7 @@ struct ChatView: View {
                             MessageBubble(message: msg)
                         }
                     }
-                    .onChange(of: vm.messages.count) { _ in
+                    .onChange(of: vm.messages.count) { _, _ in
                         if let last = vm.messages.last?.id {
                             withAnimation {
                                 proxy.scrollTo(last, anchor: .bottom)
@@ -48,5 +48,6 @@ struct ChatView: View {
             .padding()
         }
         .navigationTitle("AI")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
