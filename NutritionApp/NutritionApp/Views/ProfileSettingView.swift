@@ -51,7 +51,7 @@ struct ProfileSettingView: View {
                             showChat = true
                         }
                     }
-                    .sheet(isPresented: $showChat) {
+                    .fullScreenCover(isPresented: $showChat) {
                         ChatView() // View mà bạn muốn present
                     }
                 }
