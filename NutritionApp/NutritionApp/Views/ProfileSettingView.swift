@@ -10,6 +10,7 @@ import SwiftUI
 struct ProfileSettingView: View {
     @StateObject private var viewModel = ProfileViewModel()
     @State private var showAlert = false
+    @State private var showChat = false
 
     let genders = ["Nam", "Nữ", "Khác"]
 
@@ -46,7 +47,12 @@ struct ProfileSettingView: View {
                         }
                     }
                     .alert("Đã lưu thông tin thành công!", isPresented: $showAlert) {
-                        Button("OK", role: .cancel) {}
+                        Button("OK", role: .cancel) {
+                            showChat = true
+                        }
+                    }
+                    .sheet(isPresented: $showChat) {
+                        ChatView() // View mà bạn muốn present
                     }
                 }
             }
