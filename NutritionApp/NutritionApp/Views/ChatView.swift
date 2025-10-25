@@ -47,7 +47,7 @@ struct ChatView: View {
             }
             .padding()
         }
-        .navigationTitle("AI")
+        .navigationTitle("Chatbot AI")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

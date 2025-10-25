@@ -19,10 +19,6 @@ struct MessageBubble: View {
                     .background(message.isFromUser ? Color.blue.opacity(0.9) : Color.gray.opacity(0.2))
                     .foregroundColor(message.isFromUser ? .white : .black)
                     .cornerRadius(15)
-//                Text(message.time)
-//                    .font(.caption2)
-//                    .foregroundColor(.gray)
-//                    .padding(message.isFromUser ? .trailing : .leading, 10)
             }
             if !message.isFromUser { Spacer() }
         }

@@ -3,6 +3,7 @@
 //  NutritionApp
 //
 //  Created by 49 on 18/10/25.
+//  Updated by ChatGPT on 25/10/25.
 //
 
 import Foundation
@@ -13,64 +14,43 @@ class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage] = []
     @Published var userInput: String = ""
     
-    let baseURL = "http://127.0.0.1:8000/chat" // Replace with your backend address
+    private let baseURL = "http://127.0.0.1:8000/chat" // Replace with your backend address
     
-    func extractProfile() -> Profile {
-        if let savedData = UserDefaults.standard.data(forKey: "UserProfile") {
-            do {
-                let profileDecode = try JSONDecoder().decode(Profile.self, from: savedData)
-                return profileDecode
-            } catch {
-                print("❌ Lỗi giải mã dữ liệu:", error)
-            }
-        } else {
-            print("⚠️ Chưa có dữ liệu trong UserDefaults")
-        }
-        return Profile(height: 0, weight: 0, gender: "Nam", age: 0)
+    init() {
+        messages = [
+            ChatMessage(role: "assistant", content: "Trợ lý: Xin chào! Tôi là Trợ lý Sức khỏe của bạn 👩‍⚕️. Tôi sẽ giúp bạn kiểm tra thông tin cơ bản để lên kế hoạch ăn uống phù hợp. Trước hết, bạn có thể cho tôi biết giới tính của bạn được không?")
+        ]
     }
-    
+        
     func sendMessage() async {
         let input = userInput.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !input.isEmpty else { return }
         
-        // Add user message to chat
         let userMsg = ChatMessage(role: "user", content: input)
         messages.append(userMsg)
         userInput = ""
         
-        var userData = extractProfile()
-        
-        // Prepare request body
         let requestBody: [String: Any] = [
             "message": input,
-            "user_data": ["height":userData.height, "weight":userData.weight, "gender":userData.gender, "age":userData.age]  // You can later fill real data if needed
+            "user_data": [:]
         ]
         
-        guard let url = URL(string: baseURL) else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try? JSONSerialization.data(withJSONObject: requestBody)
+        guard let url = URL(string: baseURL) else {
+            messages.append(ChatMessage(role: "assistant", content: "⚠️ URL không hợp lệ."))
+            return
+        }
         
         do {
-            let (data, _) = try await URLSession.shared.data(for: request)
+            let responseDict = try await APIClient.shared.sendRequest(to: url, method: "POST", body: requestBody)
             
-            print("Received data: \(String(data: data, encoding: .utf8) ?? "(binary data)")")
-            
-            // Parse backend response
-            if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-               let response = json["response"] as? [String: Any],
+            if let response = responseDict["response"] as? [String: Any],
                let assistantContent = response["content"] as? String {
-                
-                let assistantMsg = ChatMessage(role: "assistant", content: assistantContent)
-                messages.append(assistantMsg)
+                messages.append(ChatMessage(role: "assistant", content: assistantContent))
             } else {
-                let errorMsg = ChatMessage(role: "assistant", content: "⚠️ Could not parse response.")
-                messages.append(errorMsg)
+                messages.append(ChatMessage(role: "assistant", content: "⚠️ Could not parse response."))
             }
         } catch {
-            let errorMsg = ChatMessage(role: "assistant", content: "🚫 Network error: \(error.localizedDescription)")
-            messages.append(errorMsg)
+            messages.append(ChatMessage(role: "assistant", content: "🚫 Network error: \(error.localizedDescription)"))
         }
     }
 }
