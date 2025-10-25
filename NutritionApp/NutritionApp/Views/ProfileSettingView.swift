@@ -13,6 +13,7 @@ struct ProfileSettingView: View {
     @State private var gender: String = "Nam"
     @State private var age: String = ""
     @State private var showAlert = false
+    @StateObject private var vm = ChatViewModel()
 
     let genders = ["Nam", "Nữ", "Khác"]
 
@@ -52,7 +53,8 @@ struct ProfileSettingView: View {
                     }
                 }
             }
-            .navigationTitle("Cài đặt hồ sơ")
+            .navigationTitle("Nhập thông tin cá nhân")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

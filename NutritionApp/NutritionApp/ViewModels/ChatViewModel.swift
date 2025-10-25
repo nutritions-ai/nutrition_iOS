@@ -3,6 +3,7 @@
 //  NutritionApp
 //
 //  Created by 49 on 18/10/25.
+//  Updated by ChatGPT on 25/10/25.
 //
 
 import Foundation
@@ -19,42 +20,31 @@ class ChatViewModel: ObservableObject {
         let input = userInput.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !input.isEmpty else { return }
         
-        // Add user message to chat
         let userMsg = ChatMessage(role: "user", content: input)
         messages.append(userMsg)
         userInput = ""
         
-        // Prepare request body
         let requestBody: [String: Any] = [
             "message": input,
-            "user_data": [:]  // You can later fill real data if needed
+            "user_data": [:]
         ]
         
-        guard let url = URL(string: baseURL) else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try? JSONSerialization.data(withJSONObject: requestBody)
+        guard let url = URL(string: baseURL) else {
+            messages.append(ChatMessage(role: "assistant", content: "⚠️ URL không hợp lệ."))
+            return
+        }
         
         do {
-            let (data, _) = try await URLSession.shared.data(for: request)
+            let responseDict = try await APIClient.shared.sendRequest(to: url, method: "POST", body: requestBody)
             
-            print("Received data: \(String(data: data, encoding: .utf8) ?? "(binary data)")")
-            
-            // Parse backend response
-            if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-               let response = json["response"] as? [String: Any],
+            if let response = responseDict["response"] as? [String: Any],
                let assistantContent = response["content"] as? String {
-                
-                let assistantMsg = ChatMessage(role: "assistant", content: assistantContent)
-                messages.append(assistantMsg)
+                messages.append(ChatMessage(role: "assistant", content: assistantContent))
             } else {
-                let errorMsg = ChatMessage(role: "assistant", content: "⚠️ Could not parse response.")
-                messages.append(errorMsg)
+                messages.append(ChatMessage(role: "assistant", content: "⚠️ Could not parse response."))
             }
         } catch {
-            let errorMsg = ChatMessage(role: "assistant", content: "🚫 Network error: \(error.localizedDescription)")
-            messages.append(errorMsg)
+            messages.append(ChatMessage(role: "assistant", content: "🚫 Network error: \(error.localizedDescription)"))
         }
     }
 }
