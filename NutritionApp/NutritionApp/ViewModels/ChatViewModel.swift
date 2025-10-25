@@ -15,6 +15,20 @@ class ChatViewModel: ObservableObject {
     
     let baseURL = "http://127.0.0.1:8000/chat" // Replace with your backend address
     
+    func extractProfile() -> Profile {
+        if let savedData = UserDefaults.standard.data(forKey: "UserProfile") {
+            do {
+                let profileDecode = try JSONDecoder().decode(Profile.self, from: savedData)
+                return profileDecode
+            } catch {
+                print("❌ Lỗi giải mã dữ liệu:", error)
+            }
+        } else {
+            print("⚠️ Chưa có dữ liệu trong UserDefaults")
+        }
+        return Profile(height: 0, weight: 0, gender: "Nam", age: 0)
+    }
+    
     func sendMessage() async {
         let input = userInput.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !input.isEmpty else { return }
@@ -24,10 +38,12 @@ class ChatViewModel: ObservableObject {
         messages.append(userMsg)
         userInput = ""
         
+        var userData = extractProfile()
+        
         // Prepare request body
         let requestBody: [String: Any] = [
             "message": input,
-            "user_data": [:]  // You can later fill real data if needed
+            "user_data": ["height":userData.height, "weight":userData.weight, "gender":userData.gender, "age":userData.age]  // You can later fill real data if needed
         ]
         
         guard let url = URL(string: baseURL) else { return }
