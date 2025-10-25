@@ -12,7 +12,7 @@ struct NutritionAppApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                ChatView()
+                ProfileSettingView()
             }
         }
     }
