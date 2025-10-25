@@ -30,7 +30,7 @@ final class APIClient {
     private let timeout: TimeInterval
     
     static let shared = APIClient()
-    
+        
     init(session: URLSession = .shared, timeout: TimeInterval = 20.0) {
         self.session = session
         self.timeout = timeout
