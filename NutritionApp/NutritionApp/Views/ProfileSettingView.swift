@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct ProfileSettingView: View {
-    @State private var height: String = ""
-    @State private var weight: String = ""
-    @State private var gender: String = "Nam"
-    @State private var age: String = ""
+    @StateObject private var viewModel = ProfileViewModel()
     @State private var showAlert = false
 
     let genders = ["Nam", "Nữ", "Khác"]
@@ -20,24 +17,25 @@ struct ProfileSettingView: View {
         NavigationView {
             Form {
                 Section(header: Text("Thông tin cá nhân")) {
-                    TextField("Chiều cao (cm)", text: $height)
-                        .keyboardType(.numberPad)
+                    TextField("Chiều cao (cm)", value: $viewModel.profile.height, format: .number)
+                        .keyboardType(.decimalPad)
                     
-                    TextField("Cân nặng (kg)", text: $weight)
-                        .keyboardType(.numberPad)
+                    TextField("Cân nặng (kg)", value: $viewModel.profile.weight, format: .number)
+                        .keyboardType(.decimalPad)
                     
-                    Picker("Giới tính", selection: $gender) {
+                    Picker("Giới tính", selection: $viewModel.profile.gender) {
                         ForEach(genders, id: \.self) { gender in
                             Text(gender)
                         }
                     }
                     
-                    TextField("Tuổi", text: $age)
+                    TextField("Tuổi", value: $viewModel.profile.age, format: .number)
                         .keyboardType(.numberPad)
                 }
                 
                 Section {
                     Button(action: {
+                        viewModel.saveProfile()
                         showAlert = true
                     }) {
                         HStack {
@@ -47,7 +45,7 @@ struct ProfileSettingView: View {
                             Spacer()
                         }
                     }
-                    .alert("Đã lưu thông tin!", isPresented: $showAlert) {
+                    .alert("Đã lưu thông tin thành công!", isPresented: $showAlert) {
                         Button("OK", role: .cancel) {}
                     }
                 }
