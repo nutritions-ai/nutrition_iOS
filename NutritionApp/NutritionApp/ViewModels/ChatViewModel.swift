@@ -13,7 +13,7 @@ class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage] = []
     @Published var userInput: String = ""
     
-    let baseURL = "http://127.0.0.1:8000/chat" // Replace with your backend address
+    let baseURL = "http://127.0.0.1:8001/chat" // Replace with your backend address
     
     func sendMessage() async {
         let input = userInput.trimmingCharacters(in: .whitespacesAndNewlines)
