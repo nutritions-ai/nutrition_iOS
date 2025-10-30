@@ -16,11 +16,11 @@ enum APIClientError: Error, LocalizedError {
     
     var errorDescription: String? {
         switch self {
-        case .badURL: return "❌ Invalid URL"
-        case .badResponseStatus(let code): return "❌ Bad response status: \(code)"
-        case .noData: return "❌ No data returned"
-        case .invalidJSON: return "❌ Response is not valid JSON object"
-        case .serializationError(let e): return "❌ Serialization error: \(e.localizedDescription)"
+        case .badURL: return "Không tồn tại URL"
+        case .badResponseStatus(let code): return "Lỗi mã HTTP: \(code)"
+        case .noData: return "Không có dữ liệu trả về"
+        case .invalidJSON: return "Sai định dạng. Dữ liệu trả về không phải là JSON"
+        case .serializationError(let error): return "Không thể chuyển đổi dữ liệu: \(error.localizedDescription)"
         }
     }
 }
