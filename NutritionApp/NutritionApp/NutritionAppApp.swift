@@ -9,17 +9,17 @@ import SwiftUI
 
 @main
 struct NutritionAppApp: App {
-//    @AppStorage("hasLaunchedBefore") var hasLaunchedBefore: Bool = false
+    @AppStorage("hasLaunchedBefore") private var hasLaunchedBefore: Bool = false
     
     var body: some Scene {
         WindowGroup {
-//            if hasLaunchedBefore {
-//                NavigationStack {
-//                    ChatView()
-//                }
-//            } else {
+            if hasLaunchedBefore {
+                NavigationStack {
+                    ChatView()
+                }
+            } else {
                 SplashView()
-//            }
+            }
         }
     }
 }
