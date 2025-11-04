@@ -16,8 +16,16 @@ struct MessageBubble: View {
             VStack(alignment: message.isFromUser ? .trailing : .leading) {
                 Text(message.content)
                     .padding(10)
-                    .background(message.isFromUser ? Color.blue.opacity(0.9) : Color.gray.opacity(0.2))
-                    .foregroundColor(message.isFromUser ? .white : .black)
+                    .background(
+                        message.isFromUser
+                        ? Color.blue.opacity(0.9)
+                        : Color(.secondarySystemBackground)
+                    )
+                    .foregroundColor(
+                        message.isFromUser
+                        ? .white
+                        : .primary
+                    )
                     .cornerRadius(15)
             }
             if !message.isFromUser { Spacer() }
@@ -25,4 +33,12 @@ struct MessageBubble: View {
         .padding(.horizontal)
         .padding(.vertical, 4)
     }
+}
+
+#Preview {
+    VStack(spacing: 12) {
+        MessageBubble(message: ChatMessage(role: "assistant", content: "Xin chào! Tôi có thể giúp gì cho bạn hôm nay?"))
+        MessageBubble(message: ChatMessage(role: "user", content: "Mình muốn có thực đơn giảm cân."))
+    }
+    .padding()
 }

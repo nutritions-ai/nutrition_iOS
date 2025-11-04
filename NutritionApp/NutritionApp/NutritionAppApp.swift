@@ -10,15 +10,18 @@ import SwiftUI
 @main
 struct NutritionAppApp: App {
     @AppStorage("hasLaunchedBefore") private var hasLaunchedBefore: Bool = false
+    @AppStorage("userName") private var userName: String = ""
     
     var body: some Scene {
         WindowGroup {
-            if hasLaunchedBefore {
+            if !hasLaunchedBefore {
+                // SplashView cần NavigationStack để điều hướng tới ProfileView
                 NavigationStack {
-                    ChatView()
+                    SplashView()
                 }
             } else {
-                SplashView()
+                // Khi đã vào app chính, KHÔNG bọc TabBarView bằng NavigationStack nữa
+                TabBarView(userName: userName)
             }
         }
     }

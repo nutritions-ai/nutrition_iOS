@@ -13,6 +13,8 @@ struct SplashView: View {
     @State private var opacity: Double = 0.8
     @State private var showSubtitle = false
     
+    @State private var navigateToProfile = false
+    
     var body: some View {
         ZStack {
             Color(.white)
@@ -60,7 +62,7 @@ struct SplashView: View {
                 if showSubtitle {
                     Button {
                         withAnimation(.easeInOut(duration: 0.5)) {
-                            hasLaunchedBefore = true   // đổi root sang ChatView
+                            navigateToProfile = true
                         }
                     } label: {
                         Text("Get started")
@@ -80,6 +82,10 @@ struct SplashView: View {
                         .frame(height: 20)
                 }
             }
+        }
+        .navigationDestination(isPresented: $navigateToProfile) {
+            ProfileView()
+                .navigationBarBackButtonHidden(true)
         }
     }
 }
