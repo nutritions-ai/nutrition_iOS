@@ -12,16 +12,30 @@ struct NutritionAppApp: App {
     @AppStorage("hasLaunchedBefore") private var hasLaunchedBefore: Bool = false
     @AppStorage("userName") private var userName: String = ""
     
-    var body: some Scene {
+    @StateObject private var shared = SharedData.shared
+
+
+//    var body: some Scene {
+//        WindowGroup {
+//            if !shared.didLaunchApp {
+//                // SplashView cần NavigationStack để điều hướng tới ProfileView
+//                NavigationStack {
+//                    SplashView()
+//                        .environmentObject(shared)
+//                }
+//            } else {
+//                // Khi đã vào app chính, KHÔNG bọc TabBarView bằng NavigationStack nữa
+//                TabBarView()
+//                    .environmentObject(shared)
+//            }
+//        }
+//    }
+    
+    var body : some Scene {
         WindowGroup {
-            if !hasLaunchedBefore {
-                // SplashView cần NavigationStack để điều hướng tới ProfileView
-                NavigationStack {
-                    SplashView()
-                }
-            } else {
-                // Khi đã vào app chính, KHÔNG bọc TabBarView bằng NavigationStack nữa
-                TabBarView(userName: userName)
+            NavigationStack {
+                ChatView()
+                    .environmentObject(shared)
             }
         }
     }

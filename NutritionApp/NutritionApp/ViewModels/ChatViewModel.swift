@@ -14,7 +14,8 @@ import UIKit
 class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage] = []
     @Published var userInput: String = ""
-    
+    @Published var shared = SharedData.shared
+
     private let baseURL = "http://127.0.0.1:8000/chat" // Replace with your backend address
     
     init() {
@@ -30,30 +31,15 @@ class ChatViewModel: ObservableObject {
         let userMsg = ChatMessage(role: "user", content: input)
         messages.append(userMsg)
         userInput = ""
-        
-        let requestBody: [String: Any] = [
-            "message": input,
-            "user_data": [:]
-        ]
-        
-        guard let url = URL(string: baseURL) else {
-            messages.append(ChatMessage(role: "assistant", content: "⚠️ URL không hợp lệ."))
-            return
-        }
-        
+
         do {
-            let responseDict = try await APIClient.shared.sendRequest(to: url, method: "POST", body: requestBody)
-            
-            if let response = responseDict["response"] as? [String: Any],
-               let assistantContent = response["content"] as? String {
-                messages.append(ChatMessage(role: "assistant", content: assistantContent))
-            } else {
-                messages.append(ChatMessage(role: "assistant", content: "⚠️ Could not parse response."))
-            }
+            let response = try await APIClient.shared.chatWithUser(userID: "123", userInput: input)
+            messages.append(ChatMessage(role: "assistant", content: response.content))
         } catch {
             messages.append(ChatMessage(role: "assistant", content: "🚫 Network error: \(error.localizedDescription)"))
         }
     }
+    
 }
  
 // MARK: Extension thêm chức năng chụp ảnh với ghi âm

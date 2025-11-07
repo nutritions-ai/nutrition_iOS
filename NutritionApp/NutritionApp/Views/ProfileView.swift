@@ -2,28 +2,31 @@
 //  ProfileView.swift
 //  NutritionApp
 //
-//  Created by Chỉnh Trần on 3/11/25.
+//  Created by hung on 6/11/25.
 //
+
 
 import SwiftUI
 
 struct ProfileView: View {
-    @AppStorage("hasLaunchedBefore") private var hasLaunchedBefore: Bool = false
-
-    @State private var name: String = ""
-    @State private var age: String = ""
-    @State private var height: String = ""
-    @State private var weight: String = ""
-    @State private var bloodPressure: String = ""
-    @State private var healthStatus: String = "Bình thường"
+    @State private var name = ""
+    @State private var age = ""
+    @State private var height = ""
+    @State private var weight = ""
     
-    let healthOptions = ["Bình thường", "Tốt", "Trung bình", "Yếu"]
+    @State private var bloodTestImage: UIImage?
+    @State private var urineTestImage: UIImage?
     
-    @State private var navigateToHome = false
+    @State private var isAnalyzing = false
+    @State private var analyzeResult: String?
+    
+    
+    @EnvironmentObject var shared: SharedData
 
+    
     var body: some View {
-        NavigationStack {
             Form {
+                // MARK: - Thông tin cá nhân
                 Section(header: Text("Thông tin cá nhân")) {
                     TextField("Họ và tên", text: $name)
                         .textInputAutocapitalization(.words)
@@ -38,60 +41,85 @@ struct ProfileView: View {
                         .keyboardType(.decimalPad)
                 }
                 
-                Section(header: Text("Sức khoẻ (tuỳ chọn)")) {
-                    TextField("Huyết áp (vd: 120/80)", text: $bloodPressure)
-                        .keyboardType(.numbersAndPunctuation)
-                    
-                    Picker("Tình trạng sức khoẻ", selection: $healthStatus) {
-                        ForEach(healthOptions, id: \.self) { status in
-                            Text(status)
+                // MARK: - Ảnh xét nghiệm
+                Section(header: Text("Kết quả xét nghiệm máu")) {
+                    ImagePickerView(selectedImage: $bloodTestImage)
+                }
+                
+                Section(header: Text("Kết quả xét nghiệm nước tiểu")) {
+                    ImagePickerView(selectedImage: $urineTestImage)
+                }
+                
+                // MARK: - Lưu & Phân tích
+                Section {
+                    if isAnalyzing {
+                        HStack {
+                            ProgressView()
+                            Text("Đang phân tích...")
+                                .foregroundColor(.gray)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    } else {
+                        Button(action: saveAndAnalyzeProfile) {
+                            Text("Lưu & Phân tích")
+                                .frame(maxWidth: .infinity)
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.green)
+                                .cornerRadius(12)
                         }
                     }
                 }
                 
-                Section {
-                    Button(action: saveProfile) {
-                        Text("Lưu thông tin")
-                            .frame(maxWidth: .infinity)
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.green)
-                            .cornerRadius(12)
+                // MARK: - Kết quả phân tích
+                if let result = analyzeResult {
+                    Section(header: Text("Kết quả phân tích")) {
+                        Text(result)
+                            .font(.body)
+                            .foregroundColor(.primary)
+                            .padding(.vertical, 4)
                     }
                 }
             }
             .navigationTitle("Hồ sơ cá nhân")
-            .navigationDestination(isPresented: $navigateToHome) {
-                TabBarView(userName: name)
-                    .navigationBarBackButtonHidden(true)
-                    .onAppear {
-                        hasLaunchedBefore = true
-                    }
+            .onAppear {
+                loadProfile()
+            }
+        }
+    
+    // MARK: - Actions
+    
+    func loadProfile() {
+        let profile = SharedData.shared.userProfile
+        name = profile.name
+        age = profile.age
+        height = profile.height
+        weight = profile.weight
+    }
+    
+    func saveAndAnalyzeProfile() {
+        Task {
+            isAnalyzing = true
+            defer { isAnalyzing = false }
+            
+            // Lưu hồ sơ vào SharedData
+            let profile = UserProfile(
+                name: name,
+                age: age,
+                weight: weight,
+                height: height,
+                bloodTest: nil,
+                urineTest: nil
+            )
+            SharedData.shared.userProfile = profile
+            
+            do {
+                let result = try await APIClient.shared.sendHealthAnalysis(profile: profile)
+                analyzeResult = "result"
+//                SharedData.shared.analyzeResult = "result"
+            } catch {
+                analyzeResult = "Lỗi khi phân tích: \(error.localizedDescription)"
             }
         }
     }
-    
-    
-    private func saveProfile() {
-        print("Đã lưu hồ sơ: \(name)")
-        
-        withAnimation(.easeInOut) {
-            navigateToHome = true
-        }
-    }
-//    private func saveProfile() {
-//        print("""
-//        --- Hồ sơ người dùng ---
-//        Họ tên: \(name)
-//        Tuổi: \(age)
-//        Chiều cao: \(height)
-//        Cân nặng: \(weight)
-//        Huyết áp: \(bloodPressure)
-//        Sức khoẻ: \(healthStatus)
-//        """)
-//    }
-}
-
-#Preview {
-    ProfileView()
 }

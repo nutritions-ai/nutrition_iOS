@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct SplashView: View {
-    @AppStorage("hasLaunchedBefore") private var hasLaunchedBefore: Bool = false
     @State private var scale: CGFloat = 0.9
     @State private var opacity: Double = 0.8
     @State private var showSubtitle = false
     
     @State private var navigateToProfile = false
-    
+    @EnvironmentObject var shared: SharedData
+
     var body: some View {
         ZStack {
             Color(.white)
@@ -84,8 +84,9 @@ struct SplashView: View {
             }
         }
         .navigationDestination(isPresented: $navigateToProfile) {
-            ProfileView()
+            ProfileEditView()
                 .navigationBarBackButtonHidden(true)
+                .environmentObject(shared)
         }
     }
 }

@@ -8,35 +8,42 @@
 import SwiftUI
 
 struct TabBarView: View {
-    var userName: String
+    @EnvironmentObject var shared: SharedData
+    @State private var path: [String] = []
 
     var body: some View {
         TabView {
             NavigationStack {
-                HomeView(userName: userName)
+                DailyMealView()
+                    .environmentObject(shared)
+
             }
             .tabItem {
                 Label("Home", systemImage: "house.fill")
             }
-
             NavigationStack {
-                ChatViewNew()
+                ChatView()
             }
             .tabItem {
                 Label("Chat", systemImage: "bubble.left.and.bubble.right.fill")
             }
-
             NavigationStack {
                 HistoryView()
             }
             .tabItem {
                 Label("Lịch sử", systemImage: "clock.fill")
             }
+            NavigationStack {
+                
+                HealthSummaryView(isInTabBar: true)
+                    .environmentObject(shared)
+
+            }
+            .tabItem {
+                Label("Hồ sơ", systemImage: "person.crop.circle.fill")
+            }
         }
         .tint(.gray)
+        .navigationBarBackButtonHidden(true)
     }
-}
-
-#Preview {
-    TabBarView(userName: "a")
 }
