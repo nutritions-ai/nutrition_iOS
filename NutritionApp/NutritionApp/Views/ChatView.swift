@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct ChatView: View {
     @StateObject private var vm = ChatViewModel()
     @EnvironmentObject var shared: SharedData  // dùng để nhận scrollToMessageID
+    
+    @State private var speechSynthesizer = AVSpeechSynthesizer()
 
     var body: some View {
         VStack {
@@ -62,5 +65,28 @@ struct ChatView: View {
         }
         .navigationTitle("Chatbot AI")
         .navigationBarTitleDisplayMode(.inline)
+        .onReceive(vm.$messages) { newMessages in
+            guard let lastMessage = newMessages.last, lastMessage.role == "user" else { return }
+            if lastMessage.content != ""  {
+                speakText("Sau đây là câu trả lời của " + lastMessage.content)
+            }
+        }
+    }
+}
+
+// MARK: - Text-to-Speech
+extension ChatView {
+    func speakText(_ text: String, language: String = "vi-VN", rate: Float = 0.5) {
+        guard !text.isEmpty else { return }
+        
+        if speechSynthesizer.isSpeaking {
+            speechSynthesizer.stopSpeaking(at: .immediate)
+        }
+        
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: language)
+        utterance.rate = rate
+        
+        speechSynthesizer.speak(utterance)
     }
 }

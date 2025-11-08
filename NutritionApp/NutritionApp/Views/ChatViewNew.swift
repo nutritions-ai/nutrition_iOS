@@ -141,6 +141,17 @@ extension ChatViewNew {
             Task { await viewModel.uploadAudio(url) }
         }
     }
+    
+    func speakText(_ text: String, language: String = "vi-VN", rate: Float = 0.5) {
+        guard !text.isEmpty else { return }
+        
+        let synthesizer = AVSpeechSynthesizer()
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: language)
+        utterance.rate = rate // tốc độ đọc: 0.0 - 1.0
+        
+        synthesizer.speak(utterance)
+    }
 }
 
 #Preview {
