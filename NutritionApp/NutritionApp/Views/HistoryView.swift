@@ -7,25 +7,16 @@
 
 import SwiftUI
 
-struct HistoryView : View {
+struct HistoryView: View {
+    @State private var searchText: String = ""
+    @ObservedObject var store = GlobalChatStore.shared
     
-    @State private var searchText : String = ""
-    
-    @State private var todayItems = [
-        "Hôm nay ăn gì hợp lí",
-        "Top 10 món ăn cho sức khoẻ tôi",
-        "Ngày hôm nay tôi nên ăn gì"
-    ]
-    
-    @State private var yesterdayItems = [
-        "1 tuần tới nên ăn gì",
-        "Món ăn không tốt cho tôi",
-        "Tôi cần làm gì để thay đổi món đó sao cho hợp lí nhất với sức khoẻ tôi"
-    ]
-    
+    // Callback truyền lên TabBarView khi nhấn câu hỏi
+    var onSelectQuestion: ((UUID) -> Void)?
+
     var body: some View {
         NavigationStack {
-            VStack() {
+            VStack {
                 // MARK: - Search + Filter
                 HStack {
                     HStack {
@@ -40,15 +31,15 @@ struct HistoryView : View {
                     .cornerRadius(12)
                     
                     Button {
-                        // action
+                        store.clearHistory()
                     } label: {
-                        Image(systemName: "line.3.horizontal.decrease.circle.fill")
+                        Image(systemName: "trash")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 22, height: 22)
+                            .frame(width: 20, height: 20)
                             .foregroundColor(.white)
                             .padding(10)
-                            .background(Color.black)
+                            .background(Color.red)
                             .cornerRadius(12)
                     }
                 }
@@ -56,52 +47,31 @@ struct HistoryView : View {
                 
                 // MARK: - List with swipe-to-delete
                 List {
-                    // Section Today
-                    Section(header: Text("Today").font(.headline)) {
-                        ForEach(filteredItems(todayItems), id: \.self) { item in
-                            HistoryRow(text: item)
-                                .listRowSeparator(.hidden)
-                                .listRowBackground(Color.clear)
+                    Section(header: Text("Đã hỏi").font(.headline)) {
+                        ForEach(filteredItems(store.questionHistory)) { item in
+                            Button {
+                                // Khi nhấn → callback
+                                onSelectQuestion?(item.id)
+                            } label: {
+                                HistoryRow(text: item.text)
+                            }
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
                         }
-                        .onDelete(perform: deleteToday)
-                    }
-                    .headerProminence(.increased)
-                    .listSectionSpacing(2)
-                    
-                    // Section Yesterday
-                    Section(header: Text("Yesterday").font(.headline)) {
-                        ForEach(filteredItems(yesterdayItems), id: \.self) { item in
-                            HistoryRow(text: item)
-                                .listRowSeparator(.hidden)
-                                .listRowBackground(Color.clear)
+                        .onDelete { offsets in
+                            store.questionHistory.remove(atOffsets: offsets)
                         }
-                        .onDelete(perform: deleteYesterday)
                     }
-                    .headerProminence(.increased)
                 }
-                .padding(.vertical,12)
                 .listStyle(.inset)
             }
             .navigationTitle("History")
             .navigationBarTitleDisplayMode(.inline)
         }
     }
-    // MARK: - Helpers
-    private func filteredItems(_ items: [String]) -> [String] {
-        if searchText.isEmpty { return items }
-        return items.filter { $0.localizedCaseInsensitiveContains(searchText) }
-    }
-    
-    private func deleteToday(at offsets: IndexSet) {
-        todayItems.remove(atOffsets: offsets)
-    }
-    
-    private func deleteYesterday(at offsets: IndexSet) {
-        yesterdayItems.remove(atOffsets: offsets)
-    }
-    
-}
 
-#Preview {
-    HistoryView()
+    private func filteredItems(_ items: [QuestionHistory]) -> [QuestionHistory] {
+        if searchText.isEmpty { return items }
+        return items.filter { $0.text.localizedCaseInsensitiveContains(searchText) }
+    }
 }

@@ -9,12 +9,14 @@
 import Foundation
 import Combine
 import UIKit
+import SwiftUI
 
 @MainActor
 class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage] = []
     @Published var userInput: String = ""
     @Published var shared = SharedData.shared
+    @ObservedObject private var store = GlobalChatStore.shared  // dùng để lưu lịch sử câu hỏi
 
     private let baseURL = "http://127.0.0.1:8000/chat" // Replace with your backend address
     
@@ -31,6 +33,8 @@ class ChatViewModel: ObservableObject {
         let userMsg = ChatMessage(role: "user", content: input)
         messages.append(userMsg)
         userInput = ""
+        
+        store.addQuestion(message: userMsg)
 
         do {
             let response = try await APIClient.shared.chatWithUser(userID: "123", userInput: input, userProfile: shared.userProfile, analyzeResult: shared.analyzeResult)

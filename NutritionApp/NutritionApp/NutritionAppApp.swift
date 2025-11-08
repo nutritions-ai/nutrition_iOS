@@ -15,6 +15,10 @@ struct NutritionAppApp: App {
     @StateObject private var shared = SharedData.shared
 
 
+    init() {
+        GlobalChatStore.shared.clearHistory()
+    }
+    
     var body: some Scene {
         WindowGroup {
             if !shared.didLaunchApp {

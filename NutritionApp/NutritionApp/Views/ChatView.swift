@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChatView: View {
     @StateObject private var vm = ChatViewModel()
+    @EnvironmentObject var shared: SharedData  // dùng để nhận scrollToMessageID
 
     var body: some View {
         VStack {
@@ -17,6 +18,7 @@ struct ChatView: View {
                     VStack(spacing: 10) {
                         ForEach(vm.messages) { msg in
                             MessageBubble(message: msg)
+                                .id(msg.id)  // dùng id để scroll
                         }
                     }
                     .onChange(of: vm.messages.count) { _, _ in
@@ -24,6 +26,17 @@ struct ChatView: View {
                             withAnimation {
                                 proxy.scrollTo(last, anchor: .bottom)
                             }
+                        }
+                    }
+                }
+                .onAppear {
+                    // scroll tới message nếu tới từ History
+                    if let targetID = shared.scrollToMessageID {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            withAnimation {
+                                proxy.scrollTo(targetID, anchor: .center)
+                            }
+                            shared.scrollToMessageID = nil
                         }
                     }
                 }

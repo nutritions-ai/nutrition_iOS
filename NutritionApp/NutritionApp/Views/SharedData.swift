@@ -26,6 +26,10 @@ class SharedData: ObservableObject {
 //    @AppStorage("didLaunchApp") var didLaunchApp: Bool = false
     
     @Published var didLaunchApp: Bool = false
+    
+    @Published var selectedTab: Int = 0               // tab hiện tại
+    @Published var scrollToMessageID: UUID? = nil     // message cần scroll trong ChatView
+
 
 
     private init() {} // prevent external instantiation
