@@ -10,10 +10,10 @@ import UniformTypeIdentifiers
 
 struct ProfileEditView: View {
 
-    @State private var name: String = "Hung"
-    @State private var age: String = "65"
-    @State private var height: String = "170"
-    @State private var weight: String = "50"
+    @State private var name: String = ""
+    @State private var age: String = ""
+    @State private var height: String = ""
+    @State private var weight: String = ""
     @State private var bloodPressure: String = ""
     @State private var healthStatus: String = "Bình thường"
     @State private var bloodTestImage: UIImage?

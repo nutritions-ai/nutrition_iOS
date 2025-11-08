@@ -71,7 +71,7 @@ struct HealthSummaryView: View {
                 //                }
                 
                 // MARK: - SECTION 4: URINE TEST
-                SectionView(title: "Xét nghiệm nước tiểu", icon: "drop.triangle.fill", iconColor: .yellow) {
+                SectionView(title: "Kết quả xét nghiệm", icon: "drop.triangle.fill", iconColor: .yellow) {
                     VStack(spacing: 12) {
                         ForEach(shared.analyzeResult.indicators) { indicator in
                             indicatorCard(indicator: indicator)

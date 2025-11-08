@@ -31,7 +31,7 @@ struct AnalyzingView: View {
                         if isAnalyzing {
                             VStack(spacing: 20) {
                                 ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .green))
                                     .scaleEffect(2.0)
                                 
                                 Text("Đang phân tích dữ liệu sức khoẻ...")
@@ -49,9 +49,7 @@ struct AnalyzingView: View {
                                     .font(.headline)
                             }
                             .transition(.opacity)
-                        }
-                        
-                        Spacer()
+                        }                        
                     }
                     .padding()
                 }

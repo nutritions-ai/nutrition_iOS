@@ -20,7 +20,7 @@ class ChatViewModel: ObservableObject {
     
     init() {
         messages = [
-            ChatMessage(role: "assistant", content: "Trợ lý: Xin chào! Tôi là Trợ lý Sức khỏe của bạn 👩‍⚕️. Tôi sẽ giúp bạn kiểm tra thông tin cơ bản để lên kế hoạch ăn uống phù hợp. Trước hết, bạn có thể cho tôi biết giới tính của bạn được không?")
+            ChatMessage(role: "assistant", content: "Trợ lý: Xin chào! Tôi là Trợ lý Sức khỏe của bạn 👩‍⚕️. Bạn có muốn hỏi tôi gì không")
         ]
     }
         

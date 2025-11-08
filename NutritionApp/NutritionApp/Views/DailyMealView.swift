@@ -21,8 +21,6 @@ struct DailyMealView: View {
                     ProgressView("Đang tạo thực đơn...")
                         .progressViewStyle(CircularProgressViewStyle(tint: .green))
                         .font(.headline)
-                        .padding(.top, 100)
-                    Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color(.systemGroupedBackground))

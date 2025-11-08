@@ -27,12 +27,12 @@ struct TabBarView: View {
             .tabItem {
                 Label("Chat", systemImage: "bubble.left.and.bubble.right.fill")
             }
-            NavigationStack {
-                HistoryView()
-            }
-            .tabItem {
-                Label("Lịch sử", systemImage: "clock.fill")
-            }
+//            NavigationStack {
+//                HistoryView()
+//            }
+//            .tabItem {
+//                Label("Lịch sử", systemImage: "clock.fill")
+//            }
             NavigationStack {
                 
                 HealthSummaryView(isInTabBar: true)
