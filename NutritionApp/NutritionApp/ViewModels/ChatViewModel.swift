@@ -37,7 +37,7 @@ class ChatViewModel: ObservableObject {
         store.addQuestion(message: userMsg)
 
         do {
-            let response = try await APIClient.shared.chatWithUser(userID: "123", userInput: input, userProfile: shared.userProfile, analyzeResult: shared.analyzeResult)
+            let response = try await APIClient.shared.chatWithUser(userID: shared.userProfile.id, userInput: input, userProfile: shared.userProfile, analyzeResult: shared.analyzeResult)
             messages.append(ChatMessage(role: "assistant", content: response.content))
         } catch {
             messages.append(ChatMessage(role: "assistant", content: "🚫 Network error: \(error.localizedDescription)"))

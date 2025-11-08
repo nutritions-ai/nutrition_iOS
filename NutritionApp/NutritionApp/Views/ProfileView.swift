@@ -113,6 +113,7 @@ struct ProfileView: View {
             )
             SharedData.shared.userProfile = profile
             
+            
             do {
                 let result = try await APIClient.shared.sendHealthAnalysis(profile: profile)
                 analyzeResult = "result"

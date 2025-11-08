@@ -88,6 +88,7 @@ struct ProfileEditView: View {
             bloodTest: bloodTestImage,
             urineTest: urineTestImage
         )
+        shared.currentUserProfile = userProfile
         shared.userProfile = userProfile
         
         withAnimation(.easeInOut) {
