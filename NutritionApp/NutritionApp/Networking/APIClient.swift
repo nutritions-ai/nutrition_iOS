@@ -190,7 +190,7 @@ final class APIClient {
         return decoded
     }
     
-    func chatWithUser(userID: String, userInput: String) async throws -> ChatMessage {
+    func chatWithUser(userID: String, userInput: String, userProfile: UserProfile, analyzeResult: AnalyzeResult) async throws -> ChatMessage {
         guard let url = URL(string: "http://127.0.0.1:8000/chat/\(userID)") else {
             throw URLError(.badURL)
         }
@@ -198,7 +198,24 @@ final class APIClient {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let body = ["user_input": userInput]
+        let encoder = JSONEncoder()
+
+        let analyzeData = try encoder.encode(analyzeResult)
+
+        let analyzeString = String(data: analyzeData, encoding: .utf8) ?? ""
+
+        // Build dictionary body directly
+        let body: [String: Any] = [
+            "user_input": userInput,
+            "user_profile": [
+                "name": userProfile.name,
+                "age": userProfile.age,
+                "weight": userProfile.weight,
+                "height": userProfile.height,
+            ],
+            "analyze_result": analyzeString
+        ]
+        
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
         
         let (data, response) = try await URLSession.shared.data(for: request)
